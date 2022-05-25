@@ -178,23 +178,21 @@ function _M.check_schema(conf, schema_type)
             end
         end
     end
+    if conf.allow_methods == "**" then
+        conf.allow_methods = "GET,POST,PUT,DELETE,PATCH,HEAD,OPTIONS,CONNECT,TRACE"
+    end
 
     return true
 end
 
 
 local function set_cors_headers(conf, ctx)
-    local allow_methods = conf.allow_methods
-    if allow_methods == "**" then
-        allow_methods = "GET,POST,PUT,DELETE,PATCH,HEAD,OPTIONS,CONNECT,TRACE"
-    end
-
     core.response.set_header("Access-Control-Allow-Origin", ctx.cors_allow_origins)
     if ctx.cors_allow_origins ~= "*" then
         core.response.add_header("Vary", "Origin")
     end
 
-    core.response.set_header("Access-Control-Allow-Methods", allow_methods)
+    core.response.set_header("Access-Control-Allow-Methods", conf.allow_methods)
     core.response.set_header("Access-Control-Max-Age", conf.max_age)
     core.response.set_header("Access-Control-Expose-Headers", conf.expose_headers)
     if conf.allow_headers == "**" then
